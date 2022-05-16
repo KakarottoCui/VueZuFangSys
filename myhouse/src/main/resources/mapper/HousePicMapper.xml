@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace=绑定一个对应的Dao/Mapper接口-->
+<mapper namespace="com.tian.myhouse.dao.HousePicService">
+<!--    <insert id="addHousePic" useGeneratedKeys="true" keyProperty="housepic.hpicid">-->
+<!--        insert into house.housepic(picone, pictwo, picthree, picfour, picfive, houid) values (#{picone}, #{pictwo}, #{picthree}, #{picfour}, #{picfive}, #{houid});-->
+<!--    </insert>-->
+
+    <insert id="addHousePic" useGeneratedKeys="true" keyProperty="hpicid">
+        insert into house.housepic(picone, pictwo, picthree, picfour, picfive) values (#{picone}, #{pictwo}, #{picthree}, #{picfour}, #{picfive});
+    </insert>
+
+    <update id="setHouid">
+        update house.housepic set houid=#{houid} where hpicid=#{hpicid}
+    </update>
+
+    <select id="findHousePicByHpicid" resultType="com.tian.myhouse.pojo.HousePic">
+        select * from house.housepic where hpicid=#{hpicid}
+    </select>
+
+<!--    通过hpicid删除指定房屋的图片数组-->
+    <delete id="deleteHousepicByhpicid">
+        delete from house.housepic where hpicid=#{hpicid}
+    </delete>
+
+</mapper>

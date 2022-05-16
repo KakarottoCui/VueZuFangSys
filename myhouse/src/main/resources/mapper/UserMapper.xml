@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace=绑定一个对应的Dao/Mapper接口-->
+<mapper namespace="com.tian.myhouse.dao.UserDao">
+
+    <!--  条件查询所有用户-->
+    <select id="getAll" resultType="com.tian.myhouse.pojo.User">
+        select * from house.users
+        <if test="account !=null">
+            where account like #{account}
+        </if>
+        LIMIT #{pageStart},#{pageSize}
+    </select>
+
+    <!--  条件获取总用户数-->
+    <select id="getAllCounts" resultType="java.lang.Integer">
+        select count(*) from house.users
+        <if test="account !=null">
+            where account like #{account}
+        </if>
+    </select>
+
+    <!--  条件查询指定用户-->
+    <select id="getUsers" resultType="com.tian.myhouse.pojo.User">
+        select * from house.users
+        <if test="isOwner !=null">
+            where isowner=#{isOwner}
+        </if>
+        <if test="account !=null">
+            and account like #{account}
+        </if>
+        LIMIT #{pageStart},#{pageSize}
+    </select>
+
+    <!-- 查询用户总数-->
+    <select id="getUserCounts" resultType="java.lang.Integer">
+        select count(*) from house.users
+        <if test="isOwner !=null">
+            where isowner=#{isOwner}
+        </if>
+        <if test="account !=null">
+            and account like #{account}
+        </if>
+    </select>
+
+    <!-- 改变用户房东权限-->
+    <update id="changUserOwner">
+        update house.users set isowner=abs(isowner-1) where account=#{account};
+    </update>
+
+    <!-- 删除用户-->
+    <delete id="deleteUser">
+        delete from house.users where account=#{account}
+    </delete>
+
+    <!-- 修改用户信息-->
+    <update id="editUser">
+        update house.users set password=#{password} where account=#{account};
+    </update>
+
+<!--    用户注册 添加一个用户-->
+    <insert id="addUser">
+        insert into house.users(account,password) values(#{account},#{password})
+    </insert>
+
+<!--    登录查询-->
+    <select id="loginFind" resultType="com.tian.myhouse.pojo.User">
+        select * from house.users where account=#{account} and password=#{password}
+    </select>
+
+
+
+</mapper>

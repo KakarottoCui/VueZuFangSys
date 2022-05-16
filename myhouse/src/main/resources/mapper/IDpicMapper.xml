@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace=绑定一个对应的Dao/Mapper接口-->
+<mapper namespace="com.tian.myhouse.dao.IDpicService">
+
+<!--    插入身份证图片数组-->
+    <insert id="addIDpic">
+        insert into house.idpic(picone, pictwo, account) values(#{picOne},#{picTwo},#{account})
+    </insert>
+
+<!--    查询对应账号身份证图片数组的pid-->
+    <select id="findpidByAccount" resultType="java.lang.Integer">
+        select pid from house.idpic where account=#{account}
+    </select>
+
+<!--    查找对应行记录，通过pid-->
+    <select id="findpidByPid" resultType="com.tian.myhouse.pojo.IDpic">
+        select * from house.idpic where pid=#{pid}
+    </select>
+
+<!--    删除指定用户的身份证图片数据-->
+    <delete id="deleteIDpicByAccount">
+        delete from house.idpic where account=#{account}
+    </delete>
+    
+</mapper>

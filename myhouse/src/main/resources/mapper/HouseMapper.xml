@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace=绑定一个对应的Dao/Mapper接口-->
+<mapper namespace="com.tian.myhouse.dao.HouseDao">
+    <insert id="addHouseUpRecord" useGeneratedKeys="true" keyProperty="houid">
+        insert into house.house(account, housetype, houseid, renttype, rentarea, floor, addressdetail, checklist, monthrent, description, housepic) values (#{account}, #{houseType}, #{houseID}, #{rentType}, #{rentArea}, #{floor}, #{addressDetail}, #{checkList}, #{monthRent}, #{description}, #{housePic})
+    </insert>
+
+    <!--  获取总所有房东申请记录数-->
+    <select id="getAllHURecordsNum" resultType="java.lang.Integer">
+        select count(*) from house.house
+        <if test="account !=null">
+            where account like #{account} and houid > 1
+        </if>
+    </select>
+
+    <!--    分页条件查询所有房屋申请记录列表-->
+    <select id="getAllHUList" resultType="com.tian.myhouse.pojo.House">
+        select * from house.house
+        <if test="account !=null">
+            where account like #{account} and houid > 1
+        </if>
+        LIMIT #{pageStart},#{pageSize}
+    </select>
+
+    <!--  获取总所有房东申请记录数-->
+    <select id="getAllOnshowHURecordsNum" resultType="java.lang.Integer">
+        select count(*) from house.house
+        <if test="account !=null">
+            where addressdetail like #{account} and houid > 1 and state=2
+        </if>
+    </select>
+
+    <!--    分页条件查询所有房屋申请记录列表-->
+    <select id="getAllOnshowHUList" resultType="com.tian.myhouse.pojo.House">
+        select * from house.house
+        <if test="account !=null">
+            where addressdetail like #{account} and houid > 1 and state=2
+        </if>
+        LIMIT #{pageStart},#{pageSize}
+    </select>
+
+    <!--  条件获取总未通过房东申请记录数-->
+    <select id="getDesignatedAllHURecordsNum" resultType="java.lang.Integer">
+        select count(*) from house.house
+        <if test="account !=null">
+            where account like #{account} and houid > 1 and state = 0
+        </if>
+    </select>
+
+    <!--    分页条件查询未通过房屋申请记录列表-->
+    <select id="getDesignatedAllHUList" resultType="com.tian.myhouse.pojo.House">
+        select * from house.house
+        <if test="account !=null">
+            where account like #{account} and houid > 1 and state = 0
+        </if>
+        LIMIT #{pageStart},#{pageSize}
+    </select>
+
+<!--    关键词查询指定房源信息数量-->
+    <select id="getAllHURecordsByKeysNum" resultType="java.lang.Integer">
+        select count(*) from house.house where addressdetail like #{houseKey} and renttype=#{rentTypeNo} and state=2
+        <if test="rentAreaStart == 49">
+            AND rentarea &lt;= 49
+        </if>
+        <if test="rentAreaStart != 180 and rentAreaStart != 49">
+            AND rentarea between #{rentAreaStart} and #{rentAreaStart}+40
+        </if>
+        <if test="rentAreaStart == 181">
+            AND rentarea &gt; 180
+        </if>
+
+        <if test="monthRentStart == 1499">
+            AND monthrent &lt;= 1499
+        </if>
+        <if test="monthRentStart != 1499 and monthRentStart != 4501">
+            AND monthrent between #{monthRentStart} and #{monthRentStart}+1000
+        </if>
+        <if test="monthRentStart == 4501">
+            AND monthRent &gt; 4500
+        </if>
+
+        <if test="floorStart == 1 or floorStart == 7">
+            AND floor between #{floorStart} and #{floorStart}+5
+        </if>
+        <if test="floorStart == 13">
+            AND floor &gt;= 13
+        </if>
+    </select>
+
+    <!--    关键词查询指定房源信息数量-->
+    <select id="getAllHUListByKeys" resultType="com.tian.myhouse.pojo.House">
+        select * from house.house where addressdetail like #{houseKey} and renttype=#{rentTypeNo} and state=2
+        <if test="rentAreaStart == 49">
+            AND rentarea &lt;= 49
+        </if>
+        <if test="rentAreaStart != 49 and rentAreaStart != 180">
+            AND rentarea between #{rentAreaStart} and #{rentAreaStart}+40
+        </if>
+        <if test="rentAreaStart == 181">
+            AND rentarea &gt; 180
+        </if>
+
+        <if test="monthRentStart == 1499">
+            AND monthrent &lt;= 1499
+        </if>
+        <if test="monthRentStart != 1499 and monthRentStart != 4501">
+            AND monthrent between #{monthRentStart} and #{monthRentStart}+1000
+        </if>
+        <if test="monthRentStart == 4501">
+            AND monthRent &gt; 4500
+        </if>
+
+        <if test="floorStart == 1 or floorStart == 7">
+            AND floor between #{floorStart} and #{floorStart}+5
+        </if>
+        <if test="floorStart == 13">
+            AND floor &gt;= 13
+        </if>
+
+        LIMIT #{pageStartTemp},#{pageSize}
+    </select>
+
+    <!--  key查询指定用户的房屋记录的数量-->
+    <select id="getKeyAllHURecordsNum" resultType="java.lang.Integer">
+        select count(*) from house.house where addressdetail like #{key} and account = #{account}
+    </select>
+
+    <!--    key查询指定用户房屋记录列表-->
+    <select id="getKeyAllHUList" resultType="com.tian.myhouse.pojo.House">
+        select * from house.house where addressdetail like #{key} and account =#{account}
+        LIMIT #{pageStart},#{pageSize}
+    </select>
+
+    <select id="getHouseDetailByhouid" resultType="com.tian.myhouse.pojo.House">
+        select * from house.house where houid =#{houid}
+    </select>
+
+<!--    通过houid查找某条记录的housepic-->
+    <select id="findHousepicByHouid" resultType="java.lang.Integer">
+        select house.housepic from house.house where houid=#{houid}
+    </select>
+
+<!--    删除指定houid的house记录-->
+    <delete id="deleteOneHouseUpRecord">
+        delete from house.house where houid=#{houid}
+    </delete>
+
+<!--    审核通过(也是上架方法)-->
+    <update id="submitHouseUpRecord">
+        update house.house set state=2 where houid=#{houid}
+    </update>
+
+    <!--    下架-->
+    <update id="offHouseUpRecord">
+        update house.house set state=1 where houid=#{houid}
+    </update>
+
+<!--    审核拒绝-->
+    <update id="refuseHouseUpRecord">
+        update house.house set state=-1,refusereason=#{refusereason} where houid=#{houid}
+    </update>
+
+    <select id="getAccountByHouid" resultType="java.lang.String">
+        select house.house.account from house.house where houid =#{houid}
+    </select>
+</mapper>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace=绑定一个对应的Dao/Mapper接口-->
+<mapper namespace="com.tian.myhouse.dao.OwnerRecordService">
+    <!--    添加一条用户申请成为房东的记录-->
+    <insert id="addApplyRecord">
+         insert into house.ownerapply(account, name, gender, homeId, age, addressDetail, phone, vx, houseNum, roomNum, description, IDpic) values (#{account},#{name},#{gender},#{homeId},#{age},#{addressdetail},#{phone},#{vx},#{housenum},#{roomnum},#{description},#{idpic})
+    </insert>
+
+    <!--    查询单条申请记录-->
+    <select id="findApplyRecordByAccount" resultType="com.tian.myhouse.pojo.OwnerApply">
+        select * from house.ownerapply where account=#{account} and oaid > 1
+    </select>
+
+    <!--  条件获取总未通过申请记录数-->
+    <select id="getAllOARecordsNum" resultType="java.lang.Integer">
+        select count(*) from house.ownerapply
+        <if test="account !=null">
+            where account like #{account} and oaid > 1 and oastate = 0
+        </if>
+    </select>
+
+<!--    条件查询未通过申请记录列表-->
+    <select id="getAllOAList" resultType="com.tian.myhouse.pojo.OwnerApply">
+        select * from house.ownerapply
+        <if test="account !=null">
+            where account like #{account} and oaid > 1 and oastate = 0
+        </if>
+        LIMIT #{pageStart},#{pageSize}
+    </select>
+
+<!--    删除指定账户的申请记录-->
+    <delete id="deleteOARecordByAccount">
+        delete from house.ownerapply where account=#{account}
+    </delete>
+
+<!--    修改记录通过状态0为未通过，1为通过-->
+    <update id="updateOARecord">
+        update house.ownerapply set oastate=abs(oastate-1) where account=#{account}
+    </update>
+
+<!--    修改用户个人纪录中的信息-->
+    <update id="updateOARecordAll">
+        update house.ownerapply set name=#{name},gender=#{gender},homeid=#{homeID},age=#{age},addressdetail=#{addressdetail},phone=#{phone},vx=#{vx},housenum=#{houseNum},roomnum=#{roomNum},description=#{description},idpic=#{IDpic} where account=#{account}
+    </update>
+
+    <!--    修改记录通过状态0为未通过，1为通过-->
+    <update id="refuseOARecord">
+        update house.ownerapply set oastate=2,refusereason=#{refusereason} where account=#{account}
+    </update>
+
+
+</mapper>
